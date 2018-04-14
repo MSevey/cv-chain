@@ -17,29 +17,29 @@ describe('Blockchain', () => {
     const data = 'foo';
     bc.addBlock(data);
 
-    expect(bc.chain[bc.chain.length - 1].data).toEqual(data);
+    expect(bc.chain[bc.chain.length-1].data).toEqual(data);
   });
 
-  it('validates a Valid Chain', () => {
+  it('validates a valid chain', () => {
     bc2.addBlock('foo');
 
     expect(bc.isValidChain(bc2.chain)).toBe(true);
   });
 
   it('invalidates a chain with a corrupt genesis block', () => {
-    bc2.chain[0].data = 'Bad Data';
+    bc2.chain[0].data = 'Bad data';
 
     expect(bc.isValidChain(bc2.chain)).toBe(false);
   });
 
-  it('invalidates a corrupt Chain', () => {
+  it('invalidates a corrupt chain', () => {
     bc2.addBlock('foo');
-    bc2.chain[0].data = 'Not foo';
+    bc2.chain[1].data = 'Not foo';
 
     expect(bc.isValidChain(bc2.chain)).toBe(false);
   });
 
-  it('replaces chain with valid chain', () => {
+  it('replaces the chain with a valid chain', () => {
     bc2.addBlock('goo');
     bc.replaceChain(bc2.chain);
 
@@ -51,6 +51,5 @@ describe('Blockchain', () => {
     bc.replaceChain(bc2.chain);
 
     expect(bc.chain).not.toEqual(bc2.chain);
-  });
-
+  })
 });

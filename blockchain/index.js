@@ -6,16 +6,16 @@ class Blockchain {
   }
 
   addBlock(data) {
-    const block = Block.mineBlock(this.chain[this.chain.length - 1], data);
+    const block = Block.mineBlock(this.chain[this.chain.length-1], data);
     this.chain.push(block);
 
     return block;
   }
 
   isValidChain(chain) {
-    if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) return false;
+    if(JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) return false;
 
-    for (let i = 1; i < chain.length; i++) {
+    for (let i=1; i<chain.length; i++) {
       const block = chain[i];
       const lastBlock = chain[i-1];
 
@@ -33,14 +33,13 @@ class Blockchain {
       console.log('Received chain is not longer than the current chain.');
       return;
     } else if (!this.isValidChain(newChain)) {
-      console.log('Received chain is not a valid chain.');
+      console.log('The received chain is not valid.');
       return;
     }
 
-    console.log('Replacing blockchain with Received chain');
+    console.log('Replacing blockchain with the new chain.');
     this.chain = newChain;
   }
-
 }
 
 module.exports = Blockchain;
