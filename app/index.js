@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Blockchain = require('../blockchain');
 const P2pServer = require('./p2p-server');
+const Wallet = require('../wallet');
+const TransactionPool = require('../wallet/transaction-pool');
 
 // this allows a user to define a HTTP_PORT at the command license
 // or use the default 3001
@@ -10,12 +12,14 @@ const HTTP_PORT = process.env.HTTP_PORT || 3001;
 // set up app
 const app = express();
 const bc = new Blockchain();
+const wallet = new Wallet();
+const tp = new TransactionPool();
 const p2pServer = new P2pServer(bc);
 
 // app middleware
 app.use(bodyParser.json());
 
-// API get request
+// API
 // req = request, res = response, provided by express
 app.get('/blocks', (req, res) => {
   res.json(bc.chain);
@@ -29,6 +33,10 @@ app.post('/mine', (req, res) => {
   p2pServer.syncChains();
 
   res.redirect('/blocks');
+});
+
+app.get('/transactions', (req, res) => {
+  res.json(tp.transactions);
 });
 
 app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`));
