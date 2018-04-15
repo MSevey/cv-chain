@@ -4,6 +4,7 @@ const Blockchain = require('../blockchain');
 const P2pServer = require('./p2p-server');
 const Wallet = require('../wallet');
 const TransactionPool = require('../wallet/transaction-pool');
+const Miner = require('./miner');
 
 // this allows a user to define a HTTP_PORT at the command license
 // or use the default 3001
@@ -15,6 +16,7 @@ const bc = new Blockchain();
 const wallet = new Wallet();
 const tp = new TransactionPool();
 const p2pServer = new P2pServer(bc, tp);
+const miner = new Miner(bc, tp, wallet, p2pServer);
 
 // app middleware
 app.use(bodyParser.json());
@@ -44,6 +46,12 @@ app.post('/transact', (req, res) => {
   const transaction = wallet.createTransaction(recipient, amount, tp);
   p2pServer.broadcastTransaction(transaction);
   res.redirect('/transactions');
+});
+
+app.get('/mine-transactions', (req, res) => {
+  const block = miner.mine();
+  console.log(`New block added: ${block.toString()}`);
+  res.redirect('/blocks');
 });
 
 app.get('/public-key', (req, res) => {
